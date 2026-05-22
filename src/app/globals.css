@@ -1,0 +1,210 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+
+  --primary: 243 75% 59%; /* #4F46E5 */
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%; /* #F9FAFB */
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 243 75% 59%;
+
+  --radius: 0.75rem;
+
+  /* Custom Zenla tokens */
+  --zenla-primary: #4F46E5;
+  --zenla-primary-hover: #4338CA;
+  --zenla-primary-light: #EEF2FF;
+  --zenla-secondary: #F9FAFB;
+  --zenla-tertiary: #A54100;
+  --zenla-accent-green: #10B981;
+  --zenla-accent-yellow: #F59E0B;
+  --zenla-danger: #EF4444;
+  --zenla-neutral: #777681;
+  --zenla-text-dark: #111827;
+  --zenla-text-muted: #6B7280;
+  --zenla-border: #E5E7EB;
+  --zenla-white: #FFFFFF;
+  
+  --sidebar-bg: #FFFFFF;
+  --sidebar-width: 240px;
+  --header-height: 64px;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@media print {
+  /* Reset document for clean printing */
+  html, body {
+    background: white !important;
+    color: black !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    visibility: hidden !important; /* Hide other body elements by default */
+  }
+
+  /* Specific elements to hide entirely when printing */
+  nav,
+  header,
+  aside,
+  footer,
+  [data-sidebar],
+  [data-header],
+  .print-hide,
+  button,
+  a[href],
+  .animate-fade-in {
+    display: none !important;
+  }
+
+  /* Make target containers visible and set static block layouts */
+  .print-only,
+  .print-only *,
+  #receipt-card,
+  #receipt-card * {
+    visibility: visible !important;
+  }
+
+  .print-only {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  #receipt-card {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: white !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Prevent heights from collapsing for flex and block elements */
+  .print-only,
+  .print-only div,
+  .print-only p,
+  .print-only span,
+  #receipt-card,
+  #receipt-card div,
+  #receipt-card p,
+  #receipt-card span {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Optimize font rendering to keep the premium design */
+  .receipt-print-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    color: black !important;
+    background: white !important;
+  }
+
+  /* Prevent page breaks inside the receipt structure */
+  .receipt-print-content *,
+  #receipt-card * {
+    page-break-inside: avoid;
+  }
+
+  /* Remove backgrounds, shadows, and rounded edges cleanly */
+  .print\:shadow-none { box-shadow: none !important; }
+  .print\:border-none { border: none !important; }
+  .print\:rounded-none { border-radius: 0 !important; }
+  .print\:hidden { display: none !important; }
+
+  /* Set page format for standard 80mm thermal receipts with clean margins */
+  @page {
+    margin: 4mm 0 4mm 0;
+    size: 80mm auto;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+

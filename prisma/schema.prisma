@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  shopName  String
+  phone     String?
+  address   String?
+  logoUrl   String?
+  createdAt DateTime @default(now())
+  products     Product[]
+  transactions Transaction[]
+  invoices     Invoice[]
+  customers    Customer[]
+  categories   Category[]
+  notifications Notification[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  category    String
+  price       Float
+  stock       Int
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  transactionItems TransactionItem[]
+  categoryId  String?
+  categoryRef Category? @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  colorIndex  Int       @default(0)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  products    Product[]
+  createdAt   DateTime  @default(now())
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  receiptNo   String   @unique
+  subtotal    Float
+  tax         Float    @default(0)
+  discount    Float    @default(0)
+  total       Float
+  paymentMethod String  // "cash" | "credit_card" | "bank_transfer" | "qris"
+  status      String   @default("paid") // "paid" | "pending" | "cancelled"
+  cashierName String?
+  customerName String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  items       TransactionItem[]
+  createdAt   DateTime @default(now())
+}
+
+model TransactionItem {
+  id            String      @id @default(cuid())
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id])
+  name          String
+  price         Float
+  quantity      Int
+  subtotal      Float
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  invoiceNo      String   @unique
+  customerName   String
+  customerEmail  String?
+  amount         Float
+  status         String   @default("pending") // "paid" | "pending" | "overdue"
+  dueDate        DateTime?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+  notes          String?
+  items          String?
+}
+
+model Customer {
+  id           String   @id @default(cuid())
+  name         String
+  email        String?
+  phone        String?
+  totalSpend   Float    @default(0)
+  visitCount   Int      @default(0)
+  status       String   @default("active")
+  notes        String?
+  avatarUrl    String?
+  isLoyalty    Boolean  @default(false)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String
+  title     String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
