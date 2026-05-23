@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { writeFile } from "fs/promises";
-import path from "path";
 
 export const dynamic = "force-dynamic";
 
@@ -34,15 +32,12 @@ export async function POST(req: Request) {
     }
 
     let imageUrl = null;
-    if (imageFile) {
+    if (imageFile && imageFile.size > 0) {
       const bytes = await imageFile.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      const filename = `product-${Date.now()}-${imageFile.name.replace(/\s/g, "-")}`;
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      const filepath = path.join(uploadDir, filename);
-      
-      await writeFile(filepath, buffer);
-      imageUrl = `/uploads/${filename}`;
+      const mimeType = imageFile.type || "image/jpeg";
+      const base64Data = buffer.toString("base64");
+      imageUrl = `data:${mimeType};base64,${base64Data}`;
     }
 
     const product = await prisma.product.create({
